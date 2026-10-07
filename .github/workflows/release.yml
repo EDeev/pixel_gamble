@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            file: PixelGamble-windows.exe
+          - os: ubuntu-latest
+            file: PixelGamble-linux.tar.gz
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pyinstaller pillow
+      - name: Иконка из портрета героя
+        run: python -c "from PIL import Image; Image.open('game/assets/images/chars/player_face.png').resize((256, 256), Image.NEAREST).save('icon.ico')"
+      - name: Сборка в один файл
+        run: pyinstaller --onefile --windowed --name PixelGamble --icon icon.ico --add-data "game/assets:assets" game/main.py
+      - name: Упаковка (Windows)
+        if: runner.os == 'Windows'
+        run: Move-Item dist/PixelGamble.exe ${{ matrix.file }}
+      - name: Упаковка (Linux)
+        if: runner.os == 'Linux'
+        run: tar -czf ${{ matrix.file }} -C dist PixelGamble
+      - name: Файл в релиз
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.ref_name }}" ${{ matrix.file }} --clobber

@@ -1,5 +1,0 @@
-pygame
-random2
-math
-csv
-os

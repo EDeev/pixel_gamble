@@ -1,0 +1,148 @@
+"""Тексты интерфейса на русском и английском."""
+
+TEXTS = {
+    "ru": {
+        "play": "Играть",
+        "controls": "Управление",
+        "settings": "Настройки",
+        "quit": "Выход",
+        "back": "Назад",
+        "resume": "Продолжить",
+        "to_menu": "В меню",
+        "again": "Ещё раз",
+        "best": "Рекорд: {score}",
+        "subtitle": "выживи 10 волн и победи самурая",
+        "music": "Музыка: {value}%",
+        "sounds": "Звуки: {value}%",
+        "language": "Язык: русский",
+        "fullscreen": "Полный экран: {value}",
+        "on": "вкл",
+        "off": "выкл",
+        "pause": "Пауза",
+        "wave": "Волна {n}/{total}",
+        "wave_big": "Волна {n}",
+        "boss_wave": "Финальная волна",
+        "enemies_left": "Врагов: {n}",
+        "wave_clear": "Волна пройдена!",
+        "choose": "Выбери улучшение",
+        "choose_hint": "1, 2, 3 или клик",
+        "level": "Ур. {n}",
+        "level_up": "Новый уровень!",
+        "game_over": "Вы погибли",
+        "victory": "Победа!",
+        "new_record": "Новый рекорд!",
+        "stat_wave": "Волна",
+        "stat_kills": "Врагов побеждено",
+        "stat_time": "Время",
+        "stat_level": "Уровень",
+        "stat_score": "Очки",
+        "boss_name": "Красный самурай",
+        "controls_text": [
+            "WASD / стрелки — движение",
+            "ЛКМ / пробел / J — удар",
+            "Q / колесо / 1-3 — сменить оружие",
+            "Удар мышью — в сторону курсора",
+            "Esc / P — пауза",
+            "F11 — полный экран",
+            "",
+            "Сердечки из врагов и камней лечат.",
+            "Опыт за врагов повышает уровень,",
+            "а между волнами — выбор улучшения.",
+        ],
+        "credits": "Графика и звук: Ninja Adventure (pixel-boy, CC0)",
+    },
+    "en": {
+        "play": "Play",
+        "controls": "Controls",
+        "settings": "Settings",
+        "quit": "Quit",
+        "back": "Back",
+        "resume": "Resume",
+        "to_menu": "Main menu",
+        "again": "Play again",
+        "best": "Best: {score}",
+        "subtitle": "survive 10 waves and defeat the samurai",
+        "music": "Music: {value}%",
+        "sounds": "Sounds: {value}%",
+        "language": "Language: English",
+        "fullscreen": "Fullscreen: {value}",
+        "on": "on",
+        "off": "off",
+        "pause": "Paused",
+        "wave": "Wave {n}/{total}",
+        "wave_big": "Wave {n}",
+        "boss_wave": "Final wave",
+        "enemies_left": "Enemies: {n}",
+        "wave_clear": "Wave cleared!",
+        "choose": "Choose an upgrade",
+        "choose_hint": "1, 2, 3 or click",
+        "level": "Lv {n}",
+        "level_up": "Level up!",
+        "game_over": "You died",
+        "victory": "Victory!",
+        "new_record": "New record!",
+        "stat_wave": "Wave",
+        "stat_kills": "Enemies defeated",
+        "stat_time": "Time",
+        "stat_level": "Level",
+        "stat_score": "Score",
+        "boss_name": "Red Samurai",
+        "controls_text": [
+            "WASD / arrows — move",
+            "LMB / Space / J — attack",
+            "Q / wheel / 1-3 — switch weapon",
+            "Mouse attacks aim at the cursor",
+            "Esc / P — pause",
+            "F11 — fullscreen",
+            "",
+            "Hearts from enemies and rocks heal.",
+            "Enemies give XP to level up,",
+            "and you pick an upgrade between waves.",
+        ],
+        "credits": "Art & sound: Ninja Adventure (pixel-boy, CC0)",
+    },
+}
+
+UPGRADES = {
+    "ru": {
+        "heart": ("Крепкое сердце", "+1 сердце и лечение"),
+        "damage": ("Острое оружие", "+15% урона"),
+        "speed": ("Лёгкие ноги", "+12% скорости"),
+        "haste": ("Быстрые руки", "удары на 12% чаще"),
+        "heal": ("Перевязка", "полное лечение"),
+        "reach": ("Длинный замах", "+20% дальности удара"),
+        "lance": ("Копьё", "бьёт дальше и насквозь"),
+        "wand": ("Магический посох", "стреляет по курсору"),
+        "multishot": ("Тройной заряд", "посох бьёт веером"),
+        "vampire": ("Жажда боя", "шанс вылечиться за победу"),
+        "knockback": ("Тяжёлая рука", "враги отлетают дальше"),
+    },
+    "en": {
+        "heart": ("Strong heart", "+1 heart and heal"),
+        "damage": ("Sharp weapons", "+15% damage"),
+        "speed": ("Light feet", "+12% speed"),
+        "haste": ("Quick hands", "attack 12% faster"),
+        "heal": ("Bandage", "full heal"),
+        "reach": ("Long swing", "+20% melee reach"),
+        "lance": ("Lance", "longer, pierces enemies"),
+        "wand": ("Magic staff", "shoots at the cursor"),
+        "multishot": ("Triple shot", "staff fires a fan"),
+        "vampire": ("Battle thirst", "chance to heal on kill"),
+        "knockback": ("Heavy hand", "enemies fly further"),
+    },
+}
+
+
+class Lang:
+    def __init__(self, code="ru"):
+        self.code = code if code in TEXTS else "ru"
+
+    def toggle(self):
+        self.code = "en" if self.code == "ru" else "ru"
+
+    def __call__(self, key, **kwargs):
+        text = TEXTS[self.code].get(key, key)
+        return text.format(**kwargs) if kwargs and isinstance(text, str) else text
+
+    def upgrade(self, key):
+        return UPGRADES[self.code][key]

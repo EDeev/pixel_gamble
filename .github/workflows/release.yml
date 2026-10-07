@@ -3,6 +3,11 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Тег релиза, файлы которого пересобрать"
+        required: true
 
 jobs:
   build:
@@ -11,13 +16,15 @@ jobs:
         include:
           - os: windows-latest
             file: PixelGamble-windows.exe
-          - os: ubuntu-latest
+          - os: ubuntu-22.04  # старая glibc — файл запустится и на системах постарше
             file: PixelGamble-linux.tar.gz
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -35,4 +42,4 @@ jobs:
       - name: Файл в релиз
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.ref_name }}" ${{ matrix.file }} --clobber
+        run: gh release upload "${{ inputs.tag || github.ref_name }}" ${{ matrix.file }} --clobber
